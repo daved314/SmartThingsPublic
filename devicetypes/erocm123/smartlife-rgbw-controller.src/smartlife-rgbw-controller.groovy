@@ -439,6 +439,8 @@ def setColor(value) {
         state.psuedoColor = value.hex
     } else if (value.hex != null) {
         value.hex = value.hex.replaceAll("#", "")
+        def hsv = rgbToHSV([red: rgb[0], green: rgb[1], blue: rgb[2]])
+
     }
 
 
@@ -666,20 +668,20 @@ private rgbToHSV(value) {
 
         float h, s, v = 0
 
+        v = max
+
+        s = max == 0 ? 0 : delta / max
+
         if (delta > 0) {
             if (r == max) {
-                h = ((g - b) / delta) * 60
+                h = ((g < b ? 6 : 0) + (g - b) / delta) * 60
             } else if (g == max) {
                 h = (2 + (b - r) / delta) * 60
             } else {
                 h = (4 + (r - g) / delta) * 60
             }
         }
-        if (max != 0) {
-            s = delta / max
-        } else {
-            s = 0
-        }
+
         log.debug "$h $s $v"
         return [hue: (h / 3.6), saturation: s * 100, level: Math.round(v * 100)] // hue and sat are not rounded.
     } else {
